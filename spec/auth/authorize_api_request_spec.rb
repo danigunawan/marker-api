@@ -17,7 +17,7 @@ RSpec.describe AuthorizeApiRequest do
     context 'when valid request' do
       it 'passes auth check' do
         result = request_obj.call
-        expect(result).to eq(:PASS)
+        expect(result).to eq(true)
       end
     end
 

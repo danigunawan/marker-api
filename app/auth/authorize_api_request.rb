@@ -4,7 +4,7 @@ class AuthorizeApiRequest
   end
 
   def call
-    :PASS
+    is_token_valid?
   end
 
   private
@@ -12,7 +12,7 @@ class AuthorizeApiRequest
   attr_reader :headers
 
   def is_token_valid?
-    @decoded_auth_payload == STATIC_CLIENT_PAYLOAD
+    decoded_auth_payload[:client] == JsonWebToken::STATIC_CLIENT_PAYLOAD[:client].to_s
   end
 
   def decoded_auth_payload
@@ -23,6 +23,6 @@ class AuthorizeApiRequest
     if headers['Authorization'].present?
       return headers['Authorization'].split(' ').last
     end
-    raise ExceptionHandler::MissingToken
+    raise(ExceptionHandler::MissingToken, 'Missing token')
   end
 end
