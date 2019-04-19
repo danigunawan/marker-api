@@ -26,6 +26,11 @@ RSpec.describe 'Markers API', type: :request do
     context 'when request payload is valid' do
       before { post '/markers', params: valid_attributes, headers: headers }
 
+      it 'creates the given marker' do
+        expect(Marker.last.lat).to eq(SAMPLE_LAT)
+        expect(Marker.last.long).to eq(SAMPLE_LONG)
+      end
+
       it 'returns the marker' do
         expect(json['lat']).to eq(SAMPLE_LAT.to_s)
         expect(json['long']).to eq(SAMPLE_LONG.to_s)
@@ -52,6 +57,12 @@ RSpec.describe 'Markers API', type: :request do
 
   describe 'DELETE /markers/:id' do
     before { delete "/markers/#{marker_id}", headers: headers }
+
+    it 'deletes the marker' do
+      expect do
+        Marker.find(marker_id)
+      end.to raise_error ActiveRecord::RecordNotFound
+    end
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
