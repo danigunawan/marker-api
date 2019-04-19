@@ -1,6 +1,4 @@
 class MarkersController < ApplicationController
-  before_action :set_marker, only: [:destroy]
-
   def index
     @markers = Marker.all
     render json: @markers, status: :ok
@@ -11,8 +9,10 @@ class MarkersController < ApplicationController
     render json: @marker, status: :created
   end
 
-  def destroy
-    @marker.destroy
+  def delete
+    @markers = Marker.where(marker_params)
+    raise ActiveRecord::RecordNotFound unless @markers.exists?
+    @markers.first.destroy!
     head :no_content
   end
 
@@ -20,9 +20,5 @@ class MarkersController < ApplicationController
 
   def marker_params
     params.permit(:lat, :long)
-  end
-
-  def set_marker
-    @marker = Marker.find(params[:id])
   end
 end

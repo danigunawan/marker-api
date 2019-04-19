@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe 'Markers API', type: :request do
   let!(:markers) { create_list(:marker, 5) }
-  let(:marker_id) { markers.first.id }
+  let(:marker_lat) { markers.first.lat }
+  let(:marker_long) { markers.first.long }
   let(:headers) { valid_headers }
 
   describe 'GET /markers' do
@@ -55,17 +56,25 @@ RSpec.describe 'Markers API', type: :request do
     end
   end
 
-  describe 'DELETE /markers/:id' do
-    before { delete "/markers/#{marker_id}", headers: headers }
+  describe 'POST /markers/delete' do
+    let(:attributes) { { lat: marker_lat, long: marker_long } }
+    before { post "/markers/delete", params: attributes.to_json, headers: headers }
 
     it 'deletes the marker' do
-      expect do
-        Marker.find(marker_id)
-      end.to raise_error ActiveRecord::RecordNotFound
+      expect(Marker.where(attributes).exists?).to eq(false)
     end
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
+    end
+
+    context 'for non-existing marker' do
+      let(:invalid_attributes) { { lat: SAMPLE_LAT, long: SAMPLE_LAT }.to_json }
+      before { post "/markers/delete", params: invalid_attributes, headers: headers }
+
+      it 'returns error message for non-existing marker' do
+        expect(response).to have_http_status(404)
+      end
     end
   end
 end
