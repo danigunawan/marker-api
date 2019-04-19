@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe AuthorizeApiRequest do
-  SHARED_TOKEN = Rails.application.secrets[:jwt_client_token]
+  RN_CLIENT_TOKEN = Rails.application.secrets[:jwt_client_token]
 
   # Mock `Authorization` header
-  let(:header) { { 'Authorization' => SHARED_TOKEN } }
+  let(:header) { { 'Authorization' => RN_CLIENT_TOKEN } }
 
   # Invalid request subject
   subject(:invalid_request_obj) { described_class.new({}) }
