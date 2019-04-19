@@ -6,6 +6,7 @@ module ExceptionHandler
   class AuthenticationError < StandardError; end
   class MissingToken < StandardError; end
   class InvalidToken < StandardError; end
+  class DuplicateMarkerError < StandardError; end
 
   included do
     rescue_from ActiveRecord::RecordNotFound do |e|
@@ -17,9 +18,14 @@ module ExceptionHandler
     rescue_from ExceptionHandler::AuthenticationError, with: :unauthorized_request
     rescue_from ExceptionHandler::MissingToken, with: :unprocessable_request
     rescue_from ExceptionHandler::InvalidToken, with: :unprocessable_request
+    rescue_from ExceptionHandler::DuplicateMarkerError, with: :duplicate_request
   end
 
   private
+
+  def duplicate_request(e)
+    render json: { message: 'TAKEN' }, status: :bad_request
+  end
 
   def unprocessable_request(e)
     render json: { message: e.message }, status: :unprocessable_entity
