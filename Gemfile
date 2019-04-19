@@ -8,6 +8,7 @@ gem 'rails', '~> 5.2.3'
 gem 'pg'
 # Use Puma as the app server
 gem 'puma', '~> 3.11'
+gem 'dotenv-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -31,7 +32,6 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'rspec-rails', '~> 3.5'
-  gem 'dotenv-rails'
   gem 'jwt'
 end
 
